@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pepe Sanchez — Portfolio</title>
+  <meta name="description" content="Two-column portfolio by Pepe Sanchez. Video left, details right. Minimal, fast, responsive." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#fbfbfb; --surface:#ffffff; --text:#141414; --muted:#6f7785;
+      --line:rgba(20,20,20,.08); --accent:#0f62fe; --radius:10px;
+      --shadow:0 1px 10px rgba(0,0,0,.05);
+      --chipHover: color-mix(in srgb, var(--accent) 10%, transparent);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b0c0f; --surface:#0f1115; --text:#f5f7fb; --muted:#9aa6b2;
+        --line:rgba(245,247,251,.12); --accent:#6aa3ff; --shadow:0 1px 12px rgba(0,0,0,.45);
+        --chipHover: color-mix(in srgb, var(--accent) 18%, transparent);
+      }
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.6 Manrope,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+    img{max-width:100%;display:block}
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1120px;margin:0 auto;padding:0 18px}
+    ::selection{background: color-mix(in srgb, var(--accent) 16%, transparent)}
+    /* Header */
+    header{position:sticky;top:0;z-index:10;background:var(--bg);border-bottom:1px solid var(--line);backdrop-filter: blur(6px)}
+    .header-inner{display:flex;align-items:center;justify-content:space-between;min-height:64px}
+    .brand{display:flex;align-items:baseline;gap:8px}
+    .brand h1{margin:0;font:700 14px/1 Manrope}
+    .brand small{color:var(--muted);font:600 12px/1 Manrope;margin-top:6px;display:block}
+    .header-actions{display:flex;align-items:center;gap:8px}
+    .to-top,.about-link{appearance:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 10px;cursor:pointer;box-shadow:var(--shadow);font:700 12px/1 Manrope}
+    .about-link{display:inline-block}
+    .to-top:focus-visible,.about-link:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+    /* Layout */
+    main{scroll-snap-type:y mandatory}
+    section.project{scroll-snap-align:start;padding:28px 0;border-bottom:1px solid var(--line)}
+    .grid{display:grid;grid-template-columns:1.5fr 1fr;gap:24px;align-items:start}
+    /* Player */
+    .player{position:relative;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface);box-shadow:var(--shadow)}
+    .frame,.cover{position:relative;width:100%;aspect-ratio:16/9}
+    .cover img{width:100%;height:100%;object-fit:cover}
+    .play{position:absolute;inset:0;display:grid;place-items:center}
+    .play.hidden{display:none !important}
+    .play button{appearance:none;border:none;background:rgba(20,20,20,.06);backdrop-filter: blur(6px);border:1px solid var(--line);width:60px;height:60px;border-radius:999px;cursor:pointer}
+    .frame iframe{position:absolute;inset:0;width:100% !important;height:100% !important;border:0}
+    .variants-wrap{margin-top:8px}
+    .variants-label{font:600 11px/1 Manrope;color:var(--muted);margin-bottom:6px}
+    .variants{display:flex;gap:6px;flex-wrap:wrap}
+    .chip{appearance:none;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font:700 11px/1 Manrope;cursor:pointer;box-shadow:var(--shadow);transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease}
+    .chip:hover{background:var(--chipHover)}
+    .chip.active{border-color:var(--accent);box-shadow:0 0 0 2px color-mix(in srgb, var(--accent) 18%, transparent)}
+    /* Details (right) */
+    .sticky{position:sticky;top:84px}
+    .kicker{font:700 10px/1 Manrope;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+    h1.title{font:700 20px/1.25 Manrope;margin:6px 0 6px}
+    .subtitle{color:var(--muted);font:600 12px/1.4 Manrope;margin:6px 0 10px}
+    .desc{margin-top:4px}
+    .credits{margin-top:8px;color:var(--muted);font:600 12px/1.4 Manrope}
+    /* Footer */
+    footer{padding:24px 0;color:var(--muted)}
+    /* About slide-over */
+    .about-overlay{position:fixed;inset:0;background:rgba(255,255,255,.6);backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .18s ease}
+    .about-overlay.open{opacity:1;pointer-events:auto}
+    .about-sheet{position:fixed;top:0;right:0;height:100%;width:min(420px,90vw);background:var(--surface);border-left:1px solid var(--line);box-shadow:var(--shadow);transform:translateX(100%);transition:transform .22s ease;display:flex;flex-direction:column}
+    .about-sheet.open{transform:translateX(0)}
+    .about-sheet header{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line)}
+    .about-sheet h2{margin:0;font:700 14px/1 Manrope}
+    .about-close{appearance:none;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 10px;cursor:pointer;font:700 12px/1 Manrope}
+    .about-body{padding:18px;font:400 14px/1.55 Manrope;color:var(--text)}
+    .about-body .muted{color:var(--muted)}
+    .about-body .stack{display:grid;gap:6px;margin-bottom:14px}
+    .about-body a:hover{text-decoration:underline}
+    /* Responsive */
+    @media (max-width:960px){ .grid{grid-template-columns:1fr;gap:14px} .sticky{position:static} .header-inner{min-height:56px} }
+    @media (max-width:640px){ .chip{padding:6px 12px;font-size:12px} .variants-label{font-size:12px} .to-top,.about-link{padding:8px 12px} }
+    /* Right-side header actions */
+    .header-actions{display:flex;align-items:center;gap:8px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container header-inner">
+      <div class="brand">
+        <h1>Pepe Sanchez</h1>
+        <small>Creative - Copy, Art & Direction</small>
+      </div>
+      <div class="header-actions">
+        <a href="#" class="about-link" id="aboutLink">About</a>
+        <button class="to-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">Top ↑</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="content" class="container"></main>
+
+  <footer class="container">&copy; <span id="year"></span> Pepe Sanchez</footer>
+
+  <!-- About UI -->
+  <div class="about-overlay" id="aboutOverlay" aria-hidden="true"></div>
+  <aside class="about-sheet" id="aboutSheet" role="dialog" aria-modal="true" aria-labelledby="aboutTitle" aria-hidden="true">
+    <header>
+      <h2 id="aboutTitle">About</h2>
+      <button class="about-close" id="aboutClose" aria-label="Close About">Close ×</button>
+    </header>
+    <div class="about-body">
+      <div class="stack muted">
+        <div>Creative — Copy, Art & Direction</div>
+        <div>Ex-Ogilvy / Ex-DDB / Zum goldenen Hirschen</div>
+        <div>Based in Frankfurt</div>
+      </div>
+      <div class="about-cta">
+        <a href="mailto:sanchezlopez.juanjose@gmail.com">Email me for the whole story.</a><br>
+        <a href="tel:+4917666336975">Call me for the short version.</a>
+      </div>
+    </div>
+  </aside>
+
+  <script>
+    // Data
+    const PROJECTS = [
+      {
+        title: "Tested by the Internet — Bosch",
+        subtitle: "Campaign · Digital activation",
+        badge: "Campaign",
+        desc: "We tested the “Invented for life” claim by letting the internet challenge Bosch products with life’s most random tests.",
+        credits: "<strong>Bosch</strong><br><small>—</small>",
+        videos: [{ id:"JQHROWT0QMY", label:"Case Video" }]
+      },
+      {
+        title: "OBI — See like a Bee",
+        subtitle: "AR filter · Instagram · 2022",
+        badge: "Case Study",
+        desc: "We created an Instagram filter simulating the color spectrum visible for bees. Flower buyers could identify the most delicious colors for bees.",
+        credits: "<strong>Zum goldenen Hirschen 43c, 2022</strong><br><small>With Christo Büers</small>",
+        videos: [{ id:"Vnza9eTTSVU", label:"Main Film" }]
+      },
+      {
+        title: "Corona Cero — In the Moment",
+        subtitle: "Film · Social · Cannes shortlist",
+        badge: "Campaign",
+        desc: "In the moment at Ponu-something beach. Here, splish splashing through sharp cutting rocks. Present with a pebble in your running shoes.",
+        credits: "<strong>David Madrid, 2022</strong><br><small>With David Kruger’s supernatural keyboard skills</small>",
+        videos: [
+          { id:"JsAfzkP0fms", label:"Cut 1" },
+          { id:"k8goaVidB5E", label:"Cut 2" },
+          { id:"FuI8Pm_ybpI", label:"Cut 3" }
+        ]
+      },
+      {
+        title: "German Rail — Discover your own country first",
+        subtitle: "Integrated · Webby Nominee · LIA · Effie",
+        badge: "Campaign",
+        desc: "Did Covid cancel your Patagonia trip? Deutsche Bahn has a plan B. Commercials across Germany and beyond.",
+        credits: "<strong>Ogilvy Frankfurt, 2020</strong><br><small>With the advanced brainpower of Sinya Horwedel, Peter Roemmelt, and Simon Oppmann.</small>",
+        videos: [
+          { id:"v-P8TUgfM6w", label:"Case Video" },
+          { id:"mDW_itL2ELw", label:"Mauritius (TV)" },
+          { id:"OnMcMyKR6pQ", label:"Instastory" },
+          { id:"OVuiyHbL_mM", label:"New York (TV)" },
+          { id:"14P2sOpH8nE", label:"China (TV)" }
+        ]
+      },
+      {
+        title: "Schwäbisch Hall — The Tiny House of Trends",
+        subtitle: "Integrated · One Show Bronze Pencil",
+        badge: "Case Study",
+        desc: "We didn’t know what young people want. So we asked them. And Schwäbisch Hall built them a house.",
+        credits: "<strong>Ogilvy Frankfurt, 2019</strong><br><small>With Simon Oppman, Sinya Horwedel and Holger Gaubatz.</small>",
+        videos: [{ id:"obO-s6ofXiM", label:"Main Film" }]
+      },
+      {
+        title: "Kia — San Salvador shot from a wheel",
+        subtitle: "Music video · 2017",
+        badge: "Campaign",
+        desc: "Kia Worldwide kept sending us photos of the Picanto in pristine European cities. We wanted to show San Salvador.",
+        credits: "<strong>RiveraRivera Publicis, 2017</strong><br><small><i>Song: AR Ferdinand<br>Music video: Mercado Negro<br>Creative team: Juan Carlos Sol and Lichy Zelaya</i></small>",
+        videos: [
+          { id:"u_iHBMQJ3fg", label:"Full Film" },
+          { id:"qw5CxuauEsY", label:"Beats Edit" }
+        ]
+      }
+    ];
+
+    const ytThumb = (id)=>`https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+    const ytEmbed = (id)=>`https://www.youtube.com/embed/${id}`;
+
+    const content = document.getElementById('content');
+
+    PROJECTS.forEach((p)=>{
+      const sec = document.createElement('section');
+      sec.className = 'project';
+      sec.innerHTML = `
+        <div class="grid">
+          <div class="left">
+            <div class="player">
+              <div class="cover"><img src="${ytThumb(p.videos[0].id)}" alt="${p.title} cover"></div>
+              <div class="frame" hidden></div>
+              <div class="play"><button aria-label="Play" title="Play">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              </button></div>
+            </div>
+            ${p.videos.length>1 ? `
+              <div class="variants-wrap" aria-label="Other versions">
+                <div class="variants-label">Other versions:</div>
+                <div class="variants">${p.videos.map((v,i)=>`<button class="chip ${i===0?'active':''}" data-vid="${v.id}" aria-label="Play ${v.label}">${v.label}</button>`).join('')}</div>
+              </div>`:''}
+          </div>
+          <div class="right sticky">
+            <div class="kicker">${p.badge}</div>
+            <h1 class="title">${p.title}</h1>
+            <div class="subtitle">${p.subtitle}</div>
+            <div class="desc">${p.desc}</div>
+            <div class="credits">${p.credits}</div>
+          </div>
+        </div>
+      `;
+      content.appendChild(sec);
+
+      const player = sec.querySelector('.player');
+      const frame = player.querySelector('.frame');
+      const cover = player.querySelector('.cover');
+      const playWrap = player.querySelector('.play');
+      const playBtn = player.querySelector('.play button');
+
+      function load(id, autoplay=true){
+        const url = `${ytEmbed(id)}?rel=0&controls=1&modestbranding=1&playsinline=1${autoplay ? '&autoplay=1' : ''}`;
+        frame.innerHTML = `<iframe src="${url}" title="${p.title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+        frame.hidden = false; cover.hidden = true;
+        playWrap.classList.add('hidden');
+      }
+
+      playBtn.addEventListener('click', ()=>load(p.videos[0].id, true));
+      cover.addEventListener('click', ()=>load(p.videos[0].id, true));
+
+      const chips = sec.querySelectorAll('.chip');
+      chips.forEach(chip=>{
+        chip.addEventListener('click', ()=>{
+          chips.forEach(c=>c.classList.remove('active'));
+          chip.classList.add('active');
+          load(chip.dataset.vid, true);
+        });
+      });
+
+      // Stop video and restore overlay when section leaves viewport
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+          if(!entry.isIntersecting){
+            if(!frame.hidden){
+              frame.innerHTML=''; frame.hidden=true; cover.hidden=false;
+              playWrap.classList.remove('hidden');
+            }
+          }
+        });
+      }, {threshold:.5});
+      io.observe(sec);
+    });
+
+    // About behavior
+    (function(){
+      const link = document.getElementById('aboutLink');
+      const overlay = document.getElementById('aboutOverlay');
+      const sheet = document.getElementById('aboutSheet');
+      const closeBtn = document.getElementById('aboutClose');
+      function openAbout(e){
+        if(e) e.preventDefault();
+        overlay.classList.add('open');
+        sheet.classList.add('open');
+        overlay.setAttribute('aria-hidden','false');
+        sheet.setAttribute('aria-hidden','false');
+        closeBtn && closeBtn.focus();
+      }
+      function closeAbout(){
+        overlay.classList.remove('open');
+        sheet.classList.remove('open');
+        overlay.setAttribute('aria-hidden','true');
+        sheet.setAttribute('aria-hidden','true');
+        link && link.focus();
+      }
+      link && link.addEventListener('click', openAbout);
+      overlay && overlay.addEventListener('click', closeAbout);
+      closeBtn && closeBtn.addEventListener('click', closeAbout);
+      window.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ closeAbout(); }});
+    })();
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
